@@ -6,17 +6,10 @@ class Level extends Phaser.Scene {
         //Create constants for the monster location
         this.bodyX = 50;
         this.bodyY = 500;
-
-        this.speed = 200; //in pixels/sec
-        this.spikeSpeed = 500;
-        this.fishSpeed = 50;
-
-        this.spawnCooldown = 2; //in seconds
-        this.spawnCooldownCounter = 0;
         
     }
 
-    // Use preload to load art and sound assets bwefore the scene starts running.
+    // Use preload to load art and sound assets before the scene starts running.
     preload() {
         this.load.setPath("./assets/");
         this.load.image("diver", "alienBeige_swim1.png");
@@ -27,6 +20,21 @@ class Level extends Phaser.Scene {
 
     create() {
         let my = this.my;   // create an alias to this.my for readability
+
+        //scene variables
+        this.speed = 200; //in pixels/sec
+        this.spikeSpeed = 500;
+        this.fishSpeed = 50;
+
+        this.spawnCooldown = 2; //in seconds
+        this.spawnCooldownCounter = 0;
+
+        this.score = 0;
+        this.scoreBoost = 1;
+
+        //wave variables
+        this.waveMaxFish = 5; //max fish to spawn for each color
+        this.activeGreenFish = 0; //the current amount sent in a wave (INCLUDES OFF SCREEN FISH)
 
         //create keys
         this.up = this.input.keyboard.addKey('W');
@@ -55,7 +63,7 @@ class Level extends Phaser.Scene {
         //make green fish group
         my.sprite.greenFishGroup = this.add.group({
             defaultKey: "greenFish",
-            maxSize: 10,
+            maxSize: 100,
             }
         )
 
@@ -83,13 +91,17 @@ class Level extends Phaser.Scene {
         if(this.spawnCooldownCounter > this.spawnCooldown / dt){
 
             //spawn fish unless all are active
-            let greenFish = my.sprite.greenFishGroup.getFirstDead();
-            if(greenFish != null){ //if all are active, greenFish will be null
-                greenFish.active = true;
-                greenFish.visible = true;
-                greenFish.x = game.config.width + greenFish.displayWidth/2; //set offscreen
-                greenFish.y = Math.random() * game.config.height;
+            if(this.activeGreenFish < this.waveMaxFish){
+                let greenFish = my.sprite.greenFishGroup.getFirstDead();
+                if(greenFish != null){ //if all are active, greenFish will be null
+                    greenFish.active = true;
+                    greenFish.visible = true;
+                    greenFish.x = game.config.width + greenFish.displayWidth/2; //set offscreen
+                    greenFish.y = Math.random() * game.config.height;
+                    this.activeGreenFish++;
+                }
             }
+            
             this.spawnCooldownCounter = 0;
         }
 
@@ -111,11 +123,10 @@ class Level extends Phaser.Scene {
 
         //shoot a spike
         if(Phaser.Input.Keyboard.JustDown(this.spaceKey)){
-            console.log("Space just down!");
             //fire spike
             // Get the first inactive spike, and make it active
             let spike = my.sprite.spikeGroup.getFirstDead();
-            // spike will be null if there are no inactive (w  available) bullets
+            // spike will be null if there are no inactive (available) bullets
             if (spike != null) {
                 spike.active = true;
                 spike.visible = true;
@@ -132,16 +143,36 @@ class Level extends Phaser.Scene {
             }
         }
 
+        //make offscreen fish inactive
+        for (let fish of my.sprite.greenFishGroup.getChildren()){
+            if (fish.x < -(fish.displayWidth/2)){
+                fish.active = false;
+                fish.visible = false;
+                //TODO: add to Fish Let Go
+            }
+        }
+
         //check fish-spike collision (naive approach)
         for(let spike of my.sprite.spikeGroup.getChildren()){
            for(let fish of my.sprite.greenFishGroup.getChildren()){
                 if(fish.active && spike.active && this.collides(fish,spike)){
+                    //set to inactive
                     spike.active = false;
                     spike.visible = false;
                     fish.active = false;
                     fish.visible = false;
+
+                    //increase score
+                    this.score += Math.floor((fish.x/10) * this.scoreBoost); //the further the fish is, the more points scored
+                    console.log("Score: " + this.score);
                 }
             }
+        }
+
+        //if all fish are inactive, new wave
+        if(my.sprite.greenFishGroup.countActive(true) == 0
+            && this.activeGreenFish == this.waveMaxFish){
+            this.newWave();
         }
 
         //increment movement of groups
@@ -151,9 +182,15 @@ class Level extends Phaser.Scene {
     }
 
     newWave(){
+        console.log("New Wave!");
         //increase fish speed
         this.fishSpeed += 10;
-        //increase maxSize of fish groups
+        //increase scoreBoost
+        this.scoreBoost += 0.1;
+        //increase waveMaxFish
+        this.waveMaxFish += 2;
+        //reset active variables
+        this.activeGreenFish = 0;
 
     }
 
