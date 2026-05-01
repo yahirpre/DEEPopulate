@@ -15,6 +15,8 @@ class Level extends Phaser.Scene {
         this.load.image("diver", "alienBeige_swim1.png");
         this.load.image("spike", "spike_top.png");
         this.load.image("greenFish", "fishGreen.png");
+        this.load.image("pinkFish", "fishPink.png");
+        this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
         
     }
 
@@ -33,8 +35,9 @@ class Level extends Phaser.Scene {
         this.scoreBoost = 1;
 
         //wave variables
-        this.waveMaxFish = 5; //max fish to spawn for each color
+        this.waveMaxFish = 3; //max fish to spawn for each color
         this.activeGreenFish = 0; //the current amount sent in a wave (INCLUDES OFF SCREEN FISH)
+        this.activePinkFish = 0;
 
         //create keys
         this.up = this.input.keyboard.addKey('W');
@@ -74,10 +77,27 @@ class Level extends Phaser.Scene {
             repeat: my.sprite.greenFishGroup.maxSize-1
         });
 
+        //make pink fish group
+        my.sprite.pinkFishGroup = this.add.group({
+            defaultKey: "pinkFish",
+            maxSize: 100,
+            }
+        )
+
+        my.sprite.pinkFishGroup.createMultiple({
+            active: false,
+            visible: false,
+            key: my.sprite.pinkFishGroup.defaultKey,
+            repeat: my.sprite.pinkFishGroup.maxSize-1
+        });
+
 
         // Create the player sprite
         my.sprite.player = this.add.sprite(this.bodyX, this.bodyY, "diver");
         my.sprite.player.setScale(0.75);
+
+        //create text
+        my.text.score = this.add.bitmapText(0,0,"rocketSquare", "SCORE: " + this.score);
         
     }
 
@@ -99,6 +119,19 @@ class Level extends Phaser.Scene {
                     greenFish.x = game.config.width + greenFish.displayWidth/2; //set offscreen
                     greenFish.y = Math.random() * game.config.height;
                     this.activeGreenFish++;
+                }
+            }
+            if(this.activePinkFish < this.waveMaxFish){
+                let pinkFish = my.sprite.pinkFishGroup.getFirstDead();
+                if(pinkFish != null){ //if all are active, greenFish will be null
+                    pinkFish.active = true;
+                    pinkFish.visible = true;
+                    pinkFish.x = game.config.width + pinkFish.displayWidth/2; //set offscreen
+                    pinkFish.y = Math.random() * game.config.height;
+                    this.activePinkFish++;
+
+                    //TODO: tween fish
+
                 }
             }
             
@@ -151,6 +184,13 @@ class Level extends Phaser.Scene {
                 //TODO: add to Fish Let Go
             }
         }
+        for (let fish of my.sprite.pinkFishGroup.getChildren()){
+            if (fish.x < -(fish.displayWidth/2)){
+                fish.active = false;
+                fish.visible = false;
+                //TODO: add to Fish Let Go
+            }
+        }
 
         //check fish-spike collision (naive approach)
         for(let spike of my.sprite.spikeGroup.getChildren()){
@@ -169,16 +209,15 @@ class Level extends Phaser.Scene {
             }
         }
 
-        //if all fish are inactive, new wave
-        if(my.sprite.greenFishGroup.countActive(true) == 0
-            && this.activeGreenFish == this.waveMaxFish){
-            this.newWave();
-        }
-
         //increment movement of groups
         my.sprite.spikeGroup.incX(this.spikeSpeed*dt);
         my.sprite.greenFishGroup.incX(-(this.fishSpeed*dt));
+        my.sprite.pinkFishGroup.incX(-(this.fishSpeed*dt));
 
+         //if all fish are inactive, new wave
+        if(this.waveComplete()){
+            this.newWave();
+        }
     }
 
     newWave(){
@@ -188,10 +227,20 @@ class Level extends Phaser.Scene {
         //increase scoreBoost
         this.scoreBoost += 0.1;
         //increase waveMaxFish
-        this.waveMaxFish += 2;
+        this.waveMaxFish += 1;
         //reset active variables
         this.activeGreenFish = 0;
+        this.activePinkFish = 0;
 
+    }
+
+    waveComplete(){
+        //wave is complete if all fish group members are inactive and active fish match waveMaxFish
+        let my = this.my;
+        return my.sprite.greenFishGroup.countActive(true) == 0
+            && my.sprite.pinkFishGroup.countActive(true) == 0
+            && this.activeGreenFish == this.waveMaxFish
+            && this.activePinkFish == this.waveMaxFish;
     }
 
     collides(a, b) {
