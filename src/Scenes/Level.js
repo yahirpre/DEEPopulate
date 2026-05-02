@@ -131,7 +131,15 @@ class Level extends Phaser.Scene {
                     this.activePinkFish++;
 
                     //TODO: tween fish
-
+                    this.fishTween = this.tweens.add({
+                        targets: pinkFish,
+                        ease: 'Sine.easeInOut',
+                        y: '+=50',
+                        duration: 2000,
+                        repeat: -1,
+                        yoyo: true
+                    });
+                    
                 }
             }
             
@@ -178,14 +186,15 @@ class Level extends Phaser.Scene {
 
         //make offscreen fish inactive
         for (let fish of my.sprite.greenFishGroup.getChildren()){
-            if (fish.x < -(fish.displayWidth/2)){
+            if (fish.active && fish.x < -(fish.displayWidth/2)){
+                console.log("Fish Let Go!");
                 fish.active = false;
                 fish.visible = false;
                 //TODO: add to Fish Let Go
             }
         }
         for (let fish of my.sprite.pinkFishGroup.getChildren()){
-            if (fish.x < -(fish.displayWidth/2)){
+            if (fish.active && fish.x < -(fish.displayWidth/2)){
                 fish.active = false;
                 fish.visible = false;
                 //TODO: add to Fish Let Go
@@ -195,6 +204,19 @@ class Level extends Phaser.Scene {
         //check fish-spike collision (naive approach)
         for(let spike of my.sprite.spikeGroup.getChildren()){
            for(let fish of my.sprite.greenFishGroup.getChildren()){
+                if(fish.active && spike.active && this.collides(fish,spike)){
+                    //set to inactive
+                    spike.active = false;
+                    spike.visible = false;
+                    fish.active = false;
+                    fish.visible = false;
+
+                    //increase score
+                    this.score += Math.floor((fish.x/10) * this.scoreBoost); //the further the fish is, the more points scored
+                    console.log("Score: " + this.score);
+                }
+            }
+            for(let fish of my.sprite.pinkFishGroup.getChildren()){
                 if(fish.active && spike.active && this.collides(fish,spike)){
                     //set to inactive
                     spike.active = false;
