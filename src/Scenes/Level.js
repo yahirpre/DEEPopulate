@@ -440,13 +440,13 @@ class Level extends Phaser.Scene {
         this.waveNum++;
         this.my.text.wave.setText("WAVE: " + this.waveNum);
         //increase fish speed
-        this.fishSpeed *= 1.01;
+        this.fishSpeed *= 1.05;
         //increase scoreBoost
-        this.scoreBoost += 0.1;
+        this.scoreBoost += 0.25;
         //increase waveMaxFish
         this.waveMaxFish += 1;
         //decrease spawnCooldown
-        this.spawnCooldown *= 0.99;
+        this.spawnCooldown *= 0.95;
         //reset variables
         this.activeGreenFish = 0;
         this.activePinkFish = 0;

@@ -1,3 +1,3 @@
 Yahir Prenger
 //
-Class assignment for CMPM 120 where we explore 1D of movement
+Game 2: Gallery Shooter submission
