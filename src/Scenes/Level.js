@@ -17,6 +17,7 @@ class Level extends Phaser.Scene {
         this.load.image("greenFish", "fishGreen.png");
         this.load.image("pinkFish", "fishPink.png");
         this.load.image("bubble", "bubble_b.png");
+        this.load.image("terrain", "terrain_dirt_top_a_outline.png");
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
         
     }
@@ -61,10 +62,14 @@ class Level extends Phaser.Scene {
         this.down = this.input.keyboard.addKey('S');
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        //draw terrain
+        my.sprite.terrain = this.add.tileSprite(50, game.config.height - 30, game.config.width*2, 60, "terrain");
+        my.sprite.terrain.setDepth(-1);
+
         //make spike group
         my.sprite.spikeGroup = this.add.group({
             defaultKey: "spike",
-            maxSize: 5,
+            maxSize: 3,
             }
         );
 
@@ -144,7 +149,7 @@ class Level extends Phaser.Scene {
         for(let sprite of my.sprite.FLGArray){
             sprite.scale = 0.5;
             sprite.flipX = true;
-            sprite.visible = true;
+            sprite.visible = false;
         }
 
     }
@@ -178,7 +183,7 @@ class Level extends Phaser.Scene {
                         pinkFish.active = true;
                         pinkFish.visible = true;
                         pinkFish.x = game.config.width + pinkFish.displayWidth/2; //set offscreen
-                        pinkFish.y = Phaser.Math.Between(this.upperBound, this.lowerBound - 100);
+                        pinkFish.y = Phaser.Math.Between(this.upperBound, this.lowerBound - 125);
                         this.activePinkFish++;
                         //add bobbing tweens
                         this.pinkFishTween = this.tweens.add({
@@ -247,6 +252,14 @@ class Level extends Phaser.Scene {
                 if (spike.x > game.config.width + spike.displayWidth/2) {
                     spike.active = false;
                     spike.visible = false;
+                }
+            }
+
+            //make offscreen bubbles inactive
+            for (let bubble of my.sprite.bubbleGroup.getChildren()) {
+                if (bubble.x > game.config.width + bubble.displayWidth/2) {
+                    bubble.active = false;
+                    bubble.visible = false;
                 }
             }
 
