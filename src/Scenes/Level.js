@@ -48,9 +48,12 @@ class Level extends Phaser.Scene {
 
         this.spawnCooldown = 2; //in seconds
         this.spawnCooldownCounter = 0;
+
         this.bubbleCooldown = 5;
         this.bubbleCooldownCounter = 0;
         this.bubbleDamage = 20;
+
+        this.blinkCounter = 0;
 
         this.health = 100;
         this.score = 0;
@@ -424,9 +427,20 @@ class Level extends Phaser.Scene {
 
         }
         else{ 
+            this.blinkCounter++;
             //restart scene on R up
             if(Phaser.Input.Keyboard.JustUp(this.rKey)){
                 this.scene.restart();
+            }
+            //blinking text
+            if(my.text.restart.visible && this.blinkCounter > 1/dt){ // if visible for 3 seconds
+                //make invisible
+                my.text.restart.visible = false;
+                this.blinkCounter = 0; //reset counter
+            }
+            else if (!my.text.restart.visible && this.blinkCounter > 0.5/dt){ //if invisible, after 1 second, make visible
+                my.text.restart.visible = true;
+                this.blinkCounter = 0; //reset counter
             }
         }
     }

@@ -114,11 +114,15 @@ class Start extends Phaser.Scene {
             this.scene.start("levelScene");
         }, this);
 
+        this.counter = 0;
+
     }
 
     update(time, delta) {
         let my = this.my;    // create an alias to this.my for readability
         let dt = delta/1000;
+
+        this.counter++;
 
         //move up
             if(this.up.isDown){
@@ -160,6 +164,17 @@ class Start extends Phaser.Scene {
             }
 
             my.sprite.spikeGroup.incX(this.spikeSpeed*dt);
-        
+            
+            //blinking text
+            if(my.text.pressToStart.visible && this.counter > 1/dt){ // if visible for 3 seconds
+                //make invisible
+                my.text.pressToStart.visible = false;
+                this.counter = 0; //reset counter
+            }
+            else if (!my.text.pressToStart.visible && this.counter > 0.5/dt){ //if invisible, after 1 second, make visible
+                my.text.pressToStart.visible = true;
+                this.counter = 0; //reset counter
+            }
     }
+    
 }
