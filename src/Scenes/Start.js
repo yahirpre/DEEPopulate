@@ -40,7 +40,7 @@ class Start extends Phaser.Scene {
 
         //scene variables
         this.upperBound = 75;
-        this.lowerBound = game.config.height - 115;
+        this.lowerBound = game.config.height - 175;
 
         this.speed = 200; //player speed in pixels/sec
         this.spikeSpeed = 500;
@@ -102,7 +102,7 @@ class Start extends Phaser.Scene {
         my.text.gameOver = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
         my.text.pressToStart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click anywhere to start", 28).setOrigin(0.5);
 
-        my.text.controls = this.add.bitmapText(game.config.width/2,game.config.height/2 + 120,"kenneySquare", "W - Move up\nS - Move Down\nSPACE - Throw Spike", 20).setOrigin(0.5);
+        my.text.controls = this.add.bitmapText(10,this.lowerBound + 50,"kenneySquare", "W - Move up\nS - Move Down\nSPACE - Throw Spike", 20).setOrigin(0);
 
         //set blend mode for all texts
         for(let text in my.text){

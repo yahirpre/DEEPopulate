@@ -90,6 +90,7 @@ class Level extends Phaser.Scene {
         this.up = this.input.keyboard.addKey('W');
         this.down = this.input.keyboard.addKey('S');
         this.rKey = this.input.keyboard.addKey('R');
+        this.mKey = this.input.keyboard.addKey('M');
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //draw terrain
@@ -166,7 +167,7 @@ class Level extends Phaser.Scene {
         my.text.wave = this.add.bitmapText(10,25,"kenneySquare", "WAVE: " + this.waveNum);
         my.text.wave.setFontSize(20);
 
-        my.text.FLG = this.add.bitmapText(10, game.config.height - 80 ,"rocketSquare", "Fish Let Go:");
+        my.text.FLG = this.add.bitmapText(10, game.config.height - 80 ,"kenneySquare", "Fish Let Go:");
         my.text.FLG.setFontSize(20);
 
         my.text.gameOver = this.add.bitmapText(0,0,"kenneySquare", "Game Over!");
@@ -175,9 +176,7 @@ class Level extends Phaser.Scene {
         my.text.gameOver.y = game.config.height/2 - my.text.gameOver.displayHeight/2;
         my.text.gameOver.visible = false;
 
-        my.text.restart = this.add.bitmapText(0,0,"kenneySquare", "Press R to restart!");
-        my.text.restart.x = game.config.width/2 - my.text.restart.displayWidth/2;
-        my.text.restart.y = game.config.height/2 - my.text.restart.displayHeight/2 + 50;
+        my.text.restart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 50,"kenneySquare", "Press R to restart\nPress M for Main Menu", 20).setOrigin(0.5);
         my.text.restart.visible = false;
 
         //set blend mode for all texts
@@ -431,6 +430,10 @@ class Level extends Phaser.Scene {
             //restart scene on R up
             if(Phaser.Input.Keyboard.JustUp(this.rKey)){
                 this.scene.restart();
+            }
+            //main menu scene on M up
+            if(Phaser.Input.Keyboard.JustUp(this.mKey)){
+                this.scene.start("startScene");
             }
             //blinking text
             if(my.text.restart.visible && this.blinkCounter > 1/dt){ // if visible for 3 seconds
