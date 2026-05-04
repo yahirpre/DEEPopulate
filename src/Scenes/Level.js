@@ -29,8 +29,8 @@ class Level extends Phaser.Scene {
         this.graphics = this.add.graphics();
 
         //scene variables
-        this.upperBound = 50;
-        this.lowerBound = game.config.height - 100;
+        this.upperBound = 75;
+        this.lowerBound = game.config.height - 115;
 
         this.speed = 200; //player speed in pixels/sec
         this.spikeSpeed = 500;
@@ -47,6 +47,7 @@ class Level extends Phaser.Scene {
         this.scoreBoost = 1;
 
         //wave variables
+        this.waveNum = 1;
         this.waveMaxFish = 3; //max fish to spawn for each color
         this.activeGreenFish = 0; //the current amount sent in a wave (INCLUDES OFF SCREEN FISH)
         this.activePinkFish = 0;
@@ -124,9 +125,12 @@ class Level extends Phaser.Scene {
         my.sprite.player = this.add.sprite(this.bodyX, this.bodyY, "diver");
         my.sprite.player.setScale(0.75);
 
-        //create text
-        my.text.score = this.add.bitmapText(0,0,"rocketSquare", "SCORE: " + this.score);
-        
+        //create texts
+        my.text.score = this.add.bitmapText(10,0,"rocketSquare", "SCORE: " + this.score);
+        my.text.wave = this.add.bitmapText(10,25,"rocketSquare", "WAVE: " + this.waveNum);
+        my.text.wave.setFontSize(20);
+        my.text.FLG = this.add.bitmapText(10, game.config.height - 80 ,"rocketSquare", "Fish Let Go:");
+        my.text.FLG.setFontSize(20);
         //create fishLetGo array to hold visual feedback of the current FLG
         my.sprite.FLGArray = [];
         //first two sprites are green fish
@@ -140,7 +144,7 @@ class Level extends Phaser.Scene {
         for(let sprite of my.sprite.FLGArray){
             sprite.scale = 0.5;
             sprite.flipX = true;
-            sprite.visible = false;
+            sprite.visible = true;
         }
 
     }
@@ -350,6 +354,9 @@ class Level extends Phaser.Scene {
 
     newWave(){
         console.log("New Wave!");
+        //update waveNum + text
+        this.waveNum++;
+        this.my.text.wave.setText("WAVE: " + this.waveNum);
         //increase fish speed
         this.fishSpeed *= 1.01;
         //increase scoreBoost
@@ -362,6 +369,8 @@ class Level extends Phaser.Scene {
         this.activeGreenFish = 0;
         this.activePinkFish = 0;
         this.playerHealth = 100;
+        //make FLGArray sprites invisible
+        for(let sprite of this.my.sprite.FLGArray) sprite.visible = false;
         //reset fishLetGo
         for(let fishKey in this.fishLetGo) this.fishLetGo[fishKey] = 0;
         //stop the tweening of the active fish
