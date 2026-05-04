@@ -60,6 +60,7 @@ class Level extends Phaser.Scene {
         //create keys
         this.up = this.input.keyboard.addKey('W');
         this.down = this.input.keyboard.addKey('S');
+        this.rKey = this.input.keyboard.addKey('R');
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //draw terrain
@@ -132,10 +133,25 @@ class Level extends Phaser.Scene {
 
         //create texts
         my.text.score = this.add.bitmapText(10,0,"rocketSquare", "SCORE: " + this.score);
+
         my.text.wave = this.add.bitmapText(10,25,"rocketSquare", "WAVE: " + this.waveNum);
         my.text.wave.setFontSize(20);
+
         my.text.FLG = this.add.bitmapText(10, game.config.height - 80 ,"rocketSquare", "Fish Let Go:");
         my.text.FLG.setFontSize(20);
+
+        my.text.gameOver = this.add.bitmapText(0,0,"rocketSquare", "Game Over!");
+        my.text.gameOver.setFontSize(48);
+        my.text.gameOver.x = game.config.width/2 - my.text.gameOver.displayWidth/2;
+        my.text.gameOver.y = game.config.height/2 - my.text.gameOver.displayHeight/2;
+        my.text.gameOver.visible = false;
+
+        my.text.restart = this.add.bitmapText(0,0,"rocketSquare", "Press R to restart!");
+        my.text.restart.x = game.config.width/2 - my.text.restart.displayWidth/2;
+        my.text.restart.y = game.config.height/2 - my.text.restart.displayHeight/2 + 50;
+        my.text.restart.visible = false;
+
+
         //create fishLetGo array to hold visual feedback of the current FLG
         my.sprite.FLGArray = [];
         //first two sprites are green fish
@@ -358,10 +374,17 @@ class Level extends Phaser.Scene {
                     //end game
                     console.log("Game Over!");
                     this.running = false;
-                    this.scene.restart();
                 }
             }
 
+        }
+        else{ //game over
+            my.text.gameOver.visible = true;
+            my.text.restart.visible = true;
+            //restart scene
+            if(Phaser.Input.Keyboard.JustUp(this.rKey)){
+                this.scene.restart();
+            }
         }
     }
 
@@ -381,7 +404,7 @@ class Level extends Phaser.Scene {
         //reset variables
         this.activeGreenFish = 0;
         this.activePinkFish = 0;
-        this.playerHealth = 100;
+        this.health = 100;
         //make FLGArray sprites invisible
         for(let sprite of this.my.sprite.FLGArray) sprite.visible = false;
         //reset fishLetGo
