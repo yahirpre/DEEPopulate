@@ -19,6 +19,7 @@ class Level extends Phaser.Scene {
         this.load.image("bubble", "bubble_b.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
+        this.load.bitmapFont("kenneySquare", "KenneySquare_0.png", "KenneySquare.fnt");
         this.load.audio("pop", "pop2.ogg");
         this.load.audio("spit", "spit.ogg");
         this.load.audio("waveDone", "confirmation_002.ogg");
@@ -157,24 +158,29 @@ class Level extends Phaser.Scene {
         my.sprite.player.setScale(0.75);
 
         //create texts
-        my.text.score = this.add.bitmapText(10,0,"rocketSquare", "SCORE: " + this.score);
+        my.text.score = this.add.bitmapText(10,0,"kenneySquare", "SCORE: " + this.score);
 
-        my.text.wave = this.add.bitmapText(10,25,"rocketSquare", "WAVE: " + this.waveNum);
+        my.text.wave = this.add.bitmapText(10,25,"kenneySquare", "WAVE: " + this.waveNum);
         my.text.wave.setFontSize(20);
 
         my.text.FLG = this.add.bitmapText(10, game.config.height - 80 ,"rocketSquare", "Fish Let Go:");
         my.text.FLG.setFontSize(20);
 
-        my.text.gameOver = this.add.bitmapText(0,0,"rocketSquare", "Game Over!");
+        my.text.gameOver = this.add.bitmapText(0,0,"kenneySquare", "Game Over!");
         my.text.gameOver.setFontSize(48);
         my.text.gameOver.x = game.config.width/2 - my.text.gameOver.displayWidth/2;
         my.text.gameOver.y = game.config.height/2 - my.text.gameOver.displayHeight/2;
         my.text.gameOver.visible = false;
 
-        my.text.restart = this.add.bitmapText(0,0,"rocketSquare", "Press R to restart!");
+        my.text.restart = this.add.bitmapText(0,0,"kenneySquare", "Press R to restart!");
         my.text.restart.x = game.config.width/2 - my.text.restart.displayWidth/2;
         my.text.restart.y = game.config.height/2 - my.text.restart.displayHeight/2 + 50;
         my.text.restart.visible = false;
+
+        //set blend mode for all texts
+        for(let text in my.text){
+            my.text[text].setBlendMode(Phaser.BlendModes.ADD);
+        }
 
 
         //create fishLetGo array to hold visual feedback of the current FLG
