@@ -9,7 +9,7 @@ class Level extends Phaser.Scene {
         
     }
 
-    // Use preload to load art and sound assets before the wscene starts running.
+    // Use preload to load art and sound assets before the scene starts running.
     preload() {
         this.load.setPath("./assets/");
         this.load.image("diver", "alienBeige_swim1.png");
@@ -45,6 +45,8 @@ class Level extends Phaser.Scene {
         this.speed = 200; //player speed in pixels/sec
         this.spikeSpeed = 500;
         this.fishSpeed = 50;
+
+        this.highScore =
 
         this.spawnCooldown = 2; //in seconds
         this.spawnCooldownCounter = 0;
