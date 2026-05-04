@@ -99,13 +99,20 @@ class Start extends Phaser.Scene {
         my.sprite.player.setScale(0.75);
 
         //create text
+        my.text.gameOver = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
+        my.text.pressToStart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click anywhere to start", 28).setOrigin(0.5);
 
-        my.text.gameOver = this.add.bitmapText(0,0,"kenneySquare", "Game Over!");
+        my.text.controls = this.add.bitmapText(game.config.width/2,game.config.height/2 + 120,"kenneySquare", "W - Move up\nS - Move Down\nSPACE - Throw Spike", 20).setOrigin(0.5);
 
         //set blend mode for all texts
         for(let text in my.text){
             my.text[text].setBlendMode(Phaser.BlendModes.ADD);
         }
+
+        //mouse input
+        this.input.on('pointerup', (pointer) =>{
+            this.scene.start("levelScene");
+        }, this);
 
     }
 
@@ -113,6 +120,46 @@ class Start extends Phaser.Scene {
         let my = this.my;    // create an alias to this.my for readability
         let dt = delta/1000;
 
+        //move up
+            if(this.up.isDown){
+                //move player sprite up
+                if(my.sprite.player.y > this.upperBound){
+                    this.my.sprite.player.y -= this.speed * dt;
+                }
+            }
+
+            //move down
+            if(this.down.isDown){
+                //move player sprite down
+                if(my.sprite.player.y < this.lowerBound){
+                        this.my.sprite.player.y += this.speed * dt;
+                }
+            }
+
+            //shoot spike
+            if(Phaser.Input.Keyboard.JustDown(this.spaceKey)){
+                //fire spike
+                // Get the first inactive spike, and make it active
+                let spike = my.sprite.spikeGroup.getFirstDead();
+                // spike will be null if there are no inactive (available) bullets
+                if (spike != null) {
+                    spike.active = true;
+                    spike.visible = true;
+                    spike.x = my.sprite.player.x;
+                    spike.y = my.sprite.player.y;
+                    this.spikeThrowSound.play();
+                }
+            }
+
+            //make offscreen spikes inactive
+            for (let spike of my.sprite.spikeGroup.getChildren()) {
+                if (spike.x > game.config.width + spike.displayWidth/2) {
+                    spike.active = false;
+                    spike.visible = false;
+                }
+            }
+
+            my.sprite.spikeGroup.incX(this.spikeSpeed*dt);
         
     }
 }
