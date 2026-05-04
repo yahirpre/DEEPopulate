@@ -19,7 +19,14 @@ class Level extends Phaser.Scene {
         this.load.image("bubble", "bubble_b.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
-        this.load.audio("pop", "pop.mp3");
+        this.load.audio("pop", "pop2.ogg");
+        this.load.audio("spit", "spit.ogg");
+        this.load.audio("waveDone", "confirmation_002.ogg");
+        this.load.audio("FLG", "question_004.ogg");
+        this.load.audio("gameOver", "spaceTrash2.ogg");
+        this.load.audio("fishHit", "drop_004.ogg");
+        this.load.audio("spikeThrow", "bong_001.ogg");
+        this.load.audio("bgMusic", "bgMusic.mp3");
         
     }
 
@@ -60,6 +67,20 @@ class Level extends Phaser.Scene {
 
         //sound effects
         this.popSound = this.sound.add("pop");
+        this.spitSound = this.sound.add("spit");
+        this.waveDownSound = this.sound.add("waveDone");
+        this.FLGSound = this.sound.add("FLG");
+        this.gameOverSound = this.sound.add("gameOver");
+        this.fishHitSound = this.sound.add("fishHit");
+        this.spikeThrowSound = this.sound.add("spikeThrow");
+
+        //start bgMusic
+        this.bgMusic = this.sound.add("bgMusic");
+        this.bgMusic.play({
+            loop: true,
+            volume: 0.3,
+            seek: 20
+        });
 
         //create keys
         this.up = this.input.keyboard.addKey('W');
@@ -203,7 +224,7 @@ class Level extends Phaser.Scene {
                         pinkFish.active = true;
                         pinkFish.visible = true;
                         pinkFish.x = game.config.width + pinkFish.displayWidth/2; //set offscreen
-                        pinkFish.y = Phaser.Math.Between(this.upperBound, this.lowerBound - 125);
+                        pinkFish.y = Phaser.Math.Between(this.upperBound, this.lowerBound - 150);
                         this.activePinkFish++;
                         //add bobbing tweens
                         this.pinkFishTween = this.tweens.add({
@@ -233,6 +254,7 @@ class Level extends Phaser.Scene {
                         bubble.x = fish.x - fish.displayWidth/2;
                         bubble.y = fish.y;
                     }
+                    this.spitSound.play();
                 }
                 this.bubbleCooldownCounter = 0;
             }
@@ -264,6 +286,7 @@ class Level extends Phaser.Scene {
                     spike.visible = true;
                     spike.x = my.sprite.player.x;
                     spike.y = my.sprite.player.y;
+                    this.spikeThrowSound.play();
                 }
             }
 
@@ -290,6 +313,7 @@ class Level extends Phaser.Scene {
                     fish.visible = false;
                     //add to Fish Let Go
                     this.fishLetGo.green++;
+                    this.FLGSound.play();
                     //display new FLG
                     my.sprite.FLGArray[this.fishLetGo.green - 1].visible = true;
                 }
@@ -300,7 +324,8 @@ class Level extends Phaser.Scene {
                     fish.visible = false;
                     //add to Fish Let Go
                     this.fishLetGo.pink++;
-                    my.sprite.FLGArray[2 + this.fishLetGo.green - 1].visible = true;
+                    this.FLGSound.play();
+                    my.sprite.FLGArray[2 + this.fishLetGo.pink - 1].visible = true;
                 }
             }
 
@@ -314,6 +339,8 @@ class Level extends Phaser.Scene {
                             fish.active = false;
                             fish.visible = false;
 
+                            this.fishHitSound.play();
+
                             //increase score
                             this.score += Math.floor((fish.x/10) * this.scoreBoost); //the further the fish is, the more points scored
                         }
@@ -326,6 +353,7 @@ class Level extends Phaser.Scene {
                         fish.active = false;
                         fish.visible = false;
 
+                        this.fishHitSound.play();
 
                         //increase score
                         this.score += Math.floor((fish.x/10) * this.scoreBoost); //the further the fish is, the more points scored
@@ -370,25 +398,27 @@ class Level extends Phaser.Scene {
             //draw health bar
             this.drawHealthBar();
     
-            //if all fish are inactive, new wave
-            if(this.waveComplete()){
-                this.newWave();
-            }
-
             //if more than 2 fishLetGo of one specie OR player health <= 0, end game
             for(let fishKey in this.fishLetGo){
                 if(this.fishLetGo[fishKey] >= 2 || this.health <= 0){
                     //end game
                     console.log("Game Over!");
                     this.running = false;
+                    this.gameOverSound.play();
+                    my.text.gameOver.visible = true;
+                    my.text.restart.visible = true;
+                    this.bgMusic.stop();
                 }
             }
 
+            //if all fish are inactive, new wave
+            if(this.waveComplete() && this.running){
+                this.newWave();
+            }
+
         }
-        else{ //game over
-            my.text.gameOver.visible = true;
-            my.text.restart.visible = true;
-            //restart scene
+        else{ 
+            //restart scene on R up
             if(Phaser.Input.Keyboard.JustUp(this.rKey)){
                 this.scene.restart();
             }
@@ -397,6 +427,7 @@ class Level extends Phaser.Scene {
 
     newWave(){
         console.log("New Wave!");
+        this.waveDownSound.play();
         //update waveNum + text
         this.waveNum++;
         this.my.text.wave.setText("WAVE: " + this.waveNum);
