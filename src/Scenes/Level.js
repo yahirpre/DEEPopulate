@@ -46,8 +46,6 @@ class Level extends Phaser.Scene {
         this.spikeSpeed = 500;
         this.fishSpeed = 50;
 
-        this.highScore =
-
         this.spawnCooldown = 2; //in seconds
         this.spawnCooldownCounter = 0;
         this.bubbleCooldown = 5;
@@ -446,7 +444,7 @@ class Level extends Phaser.Scene {
         //increase waveMaxFish
         this.waveMaxFish += 1;
         //decrease spawnCooldown
-        this.spawnCooldown *= 0.95;
+        this.spawnCooldown *= 0.98;
         //reset variables
         this.activeGreenFish = 0;
         this.activePinkFish = 0;
