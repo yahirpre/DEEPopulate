@@ -19,6 +19,7 @@ class Level extends Phaser.Scene {
         this.load.image("bubble", "bubble_b.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
+        this.load.audio("pop", "pop.mp3");
         
     }
 
@@ -56,6 +57,9 @@ class Level extends Phaser.Scene {
             green: 0,
             pink: 0
         };
+
+        //sound effects
+        this.popSound = this.sound.add("pop");
 
         //create keys
         this.up = this.input.keyboard.addKey('W');
@@ -330,6 +334,7 @@ class Level extends Phaser.Scene {
                 for(let bubble of my.sprite.bubbleGroup.getChildren()){
                     if(spike.active && bubble.active && this.collides(spike,bubble)){
                         //set to inactive
+                        this.popSound.play();
                         bubble.active = false;
                         bubble.visible = false;
                         spike.active = false;
@@ -341,9 +346,11 @@ class Level extends Phaser.Scene {
             //check player-bubble collision
             for(let bubble of my.sprite.bubbleGroup.getChildren()){
                 if(bubble.active && this.collides(my.sprite.player, bubble)){
-                    //decrease healthw
+                    //decrease health
                     console.log("Player damaged!");
                     this.health -= this.bubbleDamage;
+
+                    this.popSound.play();
 
                     //make bubble inactive
                     bubble.active = false;
