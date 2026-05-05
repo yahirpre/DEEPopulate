@@ -176,7 +176,7 @@ class Level extends Phaser.Scene {
         my.text.gameOver.y = game.config.height/2 - my.text.gameOver.displayHeight/2;
         my.text.gameOver.visible = false;
 
-        my.text.restart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 50,"kenneySquare", "Press R to restart\nPress M for Main Menu", 20).setOrigin(0.5);
+        my.text.restart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 75,"kenneySquare", "Press R to restart\nPress M for Main Menu", 20).setOrigin(0.5);
         my.text.restart.visible = false;
 
         //set blend mode for all texts

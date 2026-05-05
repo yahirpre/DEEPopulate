@@ -1,6 +1,6 @@
 class Start extends Phaser.Scene {
     constructor() {
-        super("creditsScene");
+        super("startScene");
         this.my = {sprite: {}, text: {}};  // Create an object to hold sprite bindings
 
         //Create constants for the diver location
@@ -44,6 +44,16 @@ class Start extends Phaser.Scene {
 
         this.speed = 200; //player speed in pixels/sec
         this.spikeSpeed = 500;
+
+        //wave variables
+        this.waveNum = 1;
+        this.waveMaxFish = 3; //max fish to spawn for each color
+        this.activeGreenFish = 0; //the current amount sent in a wave (INCLUDES OFF SCREEN FISH)
+        this.activePinkFish = 0;
+        this.fishLetGo = {
+            green: 0,
+            pink: 0
+        };
 
         //sound effects
         this.popSound = this.sound.add("pop");
