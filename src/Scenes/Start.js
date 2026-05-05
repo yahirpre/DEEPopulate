@@ -89,7 +89,9 @@ class Start extends Phaser.Scene {
 
         //create text
         my.text.gameOver = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
-        my.text.pressToStart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click anywhere to start", 28).setOrigin(0.5);
+        my.text.pressToStart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click to start", 28).setOrigin(0.5);
+        my.text.credits = this.add.bitmapText(game.config.width- 10,game.config.height - 70,"kenneySquare", "Click here for Credits", 20).setOrigin(1);
+        my.text.credits.setInteractive();
 
         my.text.controls = this.add.bitmapText(10,this.lowerBound + 50,"kenneySquare", "W - Move up\nS - Move Down\nSPACE - Throw Spike", 20).setOrigin(0);
 
