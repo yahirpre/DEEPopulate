@@ -11,7 +11,7 @@ class Start extends Phaser.Scene {
 
     // Use preload to load art and sound assets before the scene starts running.
     preload() {
-        this.load.setPath("./assets/");
+        this.load.setPath("assets/");
         this.load.image("diver", "alienBeige_swim1.png");
         this.load.image("spike", "spike_top.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
