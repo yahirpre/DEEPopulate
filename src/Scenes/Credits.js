@@ -1,6 +1,6 @@
-class Start extends Phaser.Scene {
+class Credits extends Phaser.Scene {
     constructor() {
-        super("startScene");
+        super("creditsScene");
         this.my = {sprite: {}, text: {}};  // Create an object to hold sprite bindings
 
         //Create constants for the diver location
@@ -27,7 +27,6 @@ class Start extends Phaser.Scene {
         this.load.audio("gameOver", "spaceTrash2.ogg");
         this.load.audio("fishHit", "drop_004.ogg");
         this.load.audio("spikeThrow", "bong_001.ogg");
-        this.load.audio("bgMusic", "bgMusic.mp3");
         
     }
 
@@ -73,35 +72,11 @@ class Start extends Phaser.Scene {
         my.sprite.terrain = this.add.tileSprite(50, game.config.height - 30, game.config.width*2, 60, "terrain");
         my.sprite.terrain.setDepth(-1);
 
-        //make spike group
-        my.sprite.spikeGroup = this.add.group({
-            defaultKey: "spike",
-            maxSize: 3,
-            }
-        );
-
-        //create members for the spike group, initialize as inactive
-        my.sprite.spikeGroup.createMultiple({
-            active: false,
-            visible: false,
-            key: my.sprite.spikeGroup.defaultKey,
-            repeat: my.sprite.spikeGroup.maxSize-1
-        });
-
-        //set spike angle and scale
-        my.sprite.spikeGroup.scaleXY(-0.75, -0.75);
-        my.sprite.spikeGroup.angle(90);
-
-        
-        // Create the player sprite
-        my.sprite.player = this.add.sprite(this.bodyX, this.bodyY, "diver");
-        my.sprite.player.setScale(0.75);
-
         //create text
-        my.text.gameOver = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
-        my.text.pressToStart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click anywhere to start", 28).setOrigin(0.5);
+        let credits = "Developer\nYahir Prenger\n\nAssets\n"
+        my.text.credits = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
+        my.text.pressAnywhere = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click anywhere to go back", 28).setOrigin(0.5);
 
-        my.text.controls = this.add.bitmapText(10,this.lowerBound + 50,"kenneySquare", "W - Move up\nS - Move Down\nSPACE - Throw Spike", 20).setOrigin(0);
 
         //set blend mode for all texts
         for(let text in my.text){
@@ -110,7 +85,7 @@ class Start extends Phaser.Scene {
 
         //mouse input
         this.input.on('pointerup', (pointer) =>{
-            this.scene.start("levelScene");
+            this.scene.start("startScene");
         }, this);
 
         this.counter = 0;
@@ -122,58 +97,17 @@ class Start extends Phaser.Scene {
         let dt = delta/1000;
 
         this.counter++;
-
-        //move up
-            if(this.up.isDown){
-                //move player sprite up
-                if(my.sprite.player.y > this.upperBound){
-                    this.my.sprite.player.y -= this.speed * dt;
-                }
-            }
-
-            //move down
-            if(this.down.isDown){
-                //move player sprite down
-                if(my.sprite.player.y < this.lowerBound){
-                        this.my.sprite.player.y += this.speed * dt;
-                }
-            }
-
-            //shoot spike
-            if(Phaser.Input.Keyboard.JustDown(this.spaceKey)){
-                //fire spike
-                // Get the first inactive spike, and make it active
-                let spike = my.sprite.spikeGroup.getFirstDead();
-                // spike will be null if there are no inactive (available) bullets
-                if (spike != null) {
-                    spike.active = true;
-                    spike.visible = true;
-                    spike.x = my.sprite.player.x;
-                    spike.y = my.sprite.player.y;
-                    this.spikeThrowSound.play();
-                }
-            }
-
-            //make offscreen spikes inactive
-            for (let spike of my.sprite.spikeGroup.getChildren()) {
-                if (spike.x > game.config.width + spike.displayWidth/2) {
-                    spike.active = false;
-                    spike.visible = false;
-                }
-            }
-
-            my.sprite.spikeGroup.incX(this.spikeSpeed*dt);
             
-            //blinking text
-            if(my.text.pressToStart.visible && this.counter > 1/dt){ // if visible for 3 seconds
-                //make invisible
-                my.text.pressToStart.visible = false;
-                this.counter = 0; //reset counter
-            }
-            else if (!my.text.pressToStart.visible && this.counter > 0.5/dt){ //if invisible, after 1 second, make visible
-                my.text.pressToStart.visible = true;
-                this.counter = 0; //reset counter
-            }
+        //blinking text
+        if(my.text.pressAnywhere.visible && this.counter > 1/dt){ // if visible for 3 seconds
+            //make invisible
+            my.text.pressAnywhere.visible = false;
+            this.counter = 0; //reset counter
+        }
+        else if (!my.text.pressAnywhere.visible && this.counter > 0.5/dt){ //if invisible, after 1 second, make visible
+            my.text.pressAnywhere.visible = true;
+            this.counter = 0; //reset counter
+        }
     }
     
 }

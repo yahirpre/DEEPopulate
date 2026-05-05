@@ -1,6 +1,6 @@
 class Start extends Phaser.Scene {
     constructor() {
-        super("creditsScene");
+        super("startScene");
         this.my = {sprite: {}, text: {}};  // Create an object to hold sprite bindings
 
         //Create constants for the diver location

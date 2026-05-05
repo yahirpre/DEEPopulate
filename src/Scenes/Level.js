@@ -433,6 +433,7 @@ class Level extends Phaser.Scene {
             }
             //main menu scene on M up
             if(Phaser.Input.Keyboard.JustUp(this.mKey)){
+                this.bgMusic.stop(); //stop music
                 this.scene.start("startScene");
             }
             //blinking text

@@ -10,7 +10,7 @@ let config = {
     },
     width: 800,
     height: 600,
-    scene: [Start,Level],
+    scene: [Start,Credits,Level],
     backgroundColor: 'rgb(138, 184, 219)',
 }
 
