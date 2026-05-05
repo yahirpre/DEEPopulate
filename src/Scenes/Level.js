@@ -18,7 +18,7 @@ class Level extends Phaser.Scene {
         this.load.image("pinkFish", "fishPink.png");
         this.load.image("bubble", "bubble_b.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
-        this.load.bitmapFont("kenneySquare", "KenneySquare_0.png", "KenneySquare.fnt");
+        this.load.bitmapFont("kenneySquare", "kenneySquare_0.png", "kenneySquare.fnt");
         this.load.audio("pop", "pop2.ogg");
         this.load.audio("spit", "spit.ogg");
         this.load.audio("waveDone", "confirmation_002.ogg");
