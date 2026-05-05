@@ -11,7 +11,7 @@ let config = {
     width: 800,
     height: 600,
     scene: [Start,Credits,Level],
-    backgroundColor: 'rgb(138, 184, 219)',
+    backgroundColor: 'rgb(121, 164, 214)',
 }
 
 const game = new Phaser.Game(config);

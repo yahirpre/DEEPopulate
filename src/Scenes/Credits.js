@@ -12,56 +12,15 @@ class Credits extends Phaser.Scene {
     // Use preload to load art and sound assets before the scene starts running.
     preload() {
         this.load.setPath("./assets/");
-        this.load.image("diver", "alienBeige_swim1.png");
-        this.load.image("spike", "spike_top.png");
-        this.load.image("greenFish", "fishGreen.png");
-        this.load.image("pinkFish", "fishPink.png");
-        this.load.image("bubble", "bubble_b.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
         this.load.bitmapFont("kenneySquare", "KenneySquare_0.png", "KenneySquare.fnt");
-        this.load.audio("pop", "pop2.ogg");
-        this.load.audio("spit", "spit.ogg");
-        this.load.audio("waveDone", "confirmation_002.ogg");
-        this.load.audio("FLG", "question_004.ogg");
-        this.load.audio("gameOver", "spaceTrash2.ogg");
-        this.load.audio("fishHit", "drop_004.ogg");
-        this.load.audio("spikeThrow", "bong_001.ogg");
         
     }
 
     create() {
         let my = this.my;   // create an alias to this.my for readability
         
-        this.running = true; //game running boolean
-
-        this.graphics = this.add.graphics();
-
-        //scene variables
-        this.upperBound = 75;
-        this.lowerBound = game.config.height - 175;
-
-        this.speed = 200; //player speed in pixels/sec
-        this.spikeSpeed = 500;
-
-        //wave variables
-        this.waveNum = 1;
-        this.waveMaxFish = 3; //max fish to spawn for each color
-        this.activeGreenFish = 0; //the current amount sent in a wave (INCLUDES OFF SCREEN FISH)
-        this.activePinkFish = 0;
-        this.fishLetGo = {
-            green: 0,
-            pink: 0
-        };
-
-        //sound effects
-        this.popSound = this.sound.add("pop");
-        this.spitSound = this.sound.add("spit");
-        this.waveDownSound = this.sound.add("waveDone");
-        this.FLGSound = this.sound.add("FLG");
-        this.gameOverSound = this.sound.add("gameOver");
-        this.fishHitSound = this.sound.add("fishHit");
-        this.spikeThrowSound = this.sound.add("spikeThrow");
 
         //create keys
         this.up = this.input.keyboard.addKey('W');
@@ -73,9 +32,12 @@ class Credits extends Phaser.Scene {
         my.sprite.terrain.setDepth(-1);
 
         //create text
-        let credits = "Developer\nYahir Prenger\n\nAssets\n"
-        my.text.credits = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
-        my.text.pressAnywhere = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click anywhere to go back", 28).setOrigin(0.5);
+        let credits = "Developer\nYahir Prenger\n\nSprite and Sound Assets\nKenney\n\nMusic\nToiletPlungerStudios"
+        my.text.credits = this.add.bitmapText(game.config.width/2,game.config.height/2-200,"kenneySquare", "Credits", 64).setOrigin(0.5);
+        my.text.body = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", credits, 32).setOrigin(0.5);
+        my.text.body.setCenterAlign();
+
+        my.text.pressAnywhere = this.add.bitmapText(game.config.width/2,game.config.height/2 + 196,"kenneySquare", "Click anywhere to go back", 24).setOrigin(0.5);
 
 
         //set blend mode for all texts

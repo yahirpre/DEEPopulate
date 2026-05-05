@@ -35,7 +35,7 @@ class Level extends Phaser.Scene {
         let my = this.my;   // create an alias to this.my for readability
         
         this.running = true; //game running boolean
-
+        
         this.graphics = this.add.graphics();
 
         //scene variables
@@ -46,12 +46,12 @@ class Level extends Phaser.Scene {
         this.spikeSpeed = 500;
         this.fishSpeed = 50;
 
-        this.spawnCooldown = 2; //in seconds
+        this.spawnCooldown = 3; //in seconds
         this.spawnCooldownCounter = 0;
 
         this.bubbleCooldown = 5;
         this.bubbleCooldownCounter = 0;
-        this.bubbleDamage = 20;
+        this.bubbleDamage = 100/3;
 
         this.blinkCounter = 0;
 
@@ -398,7 +398,7 @@ class Level extends Phaser.Scene {
             my.sprite.spikeGroup.incX(this.spikeSpeed*dt);
             my.sprite.greenFishGroup.incX(-(this.fishSpeed*dt));
             my.sprite.pinkFishGroup.incX(-(this.fishSpeed*dt));
-            my.sprite.bubbleGroup.incX(-(this.fishSpeed*3*dt));
+            my.sprite.bubbleGroup.incX(-(this.fishSpeed*5*dt));
 
             //draw score text
             my.text.score.setText("Score: " + this.score);
@@ -462,8 +462,8 @@ class Level extends Phaser.Scene {
         //increase waveMaxFish
         this.waveMaxFish += 1;
         //decrease spawnCooldown
-        this.spawnCooldown *= 0.98;
-        //reset variables
+        this.spawnCooldown *= 0.95;
+        //reset variables 
         this.activeGreenFish = 0;
         this.activePinkFish = 0;
         this.health = 100;

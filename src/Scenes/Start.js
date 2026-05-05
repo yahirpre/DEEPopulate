@@ -14,30 +14,16 @@ class Start extends Phaser.Scene {
         this.load.setPath("./assets/");
         this.load.image("diver", "alienBeige_swim1.png");
         this.load.image("spike", "spike_top.png");
-        this.load.image("greenFish", "fishGreen.png");
-        this.load.image("pinkFish", "fishPink.png");
-        this.load.image("bubble", "bubble_b.png");
         this.load.image("terrain", "terrain_dirt_top_a_outline.png");
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
         this.load.bitmapFont("kenneySquare", "KenneySquare_0.png", "KenneySquare.fnt");
-        this.load.audio("pop", "pop2.ogg");
-        this.load.audio("spit", "spit.ogg");
-        this.load.audio("waveDone", "confirmation_002.ogg");
-        this.load.audio("FLG", "question_004.ogg");
-        this.load.audio("gameOver", "spaceTrash2.ogg");
-        this.load.audio("fishHit", "drop_004.ogg");
         this.load.audio("spikeThrow", "bong_001.ogg");
-        this.load.audio("bgMusic", "bgMusic.mp3");
         
     }
 
     create() {
         let my = this.my;   // create an alias to this.my for readability
         
-        this.running = true; //game running boolean
-
-        this.graphics = this.add.graphics();
-
         //scene variables
         this.upperBound = 75;
         this.lowerBound = game.config.height - 175;
@@ -46,12 +32,6 @@ class Start extends Phaser.Scene {
         this.spikeSpeed = 500;
 
         //sound effects
-        this.popSound = this.sound.add("pop");
-        this.spitSound = this.sound.add("spit");
-        this.waveDownSound = this.sound.add("waveDone");
-        this.FLGSound = this.sound.add("FLG");
-        this.gameOverSound = this.sound.add("gameOver");
-        this.fishHitSound = this.sound.add("fishHit");
         this.spikeThrowSound = this.sound.add("spikeThrow");
 
         //create keys
@@ -88,9 +68,11 @@ class Start extends Phaser.Scene {
         my.sprite.player.setScale(0.75);
 
         //create text
-        my.text.gameOver = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
-        my.text.pressToStart = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Click to start", 28).setOrigin(0.5);
-        my.text.credits = this.add.bitmapText(game.config.width- 10,game.config.height - 70,"kenneySquare", "Click here for Credits", 20).setOrigin(1);
+        my.text.title = this.add.bitmapText(game.config.width/2,game.config.height/2,"kenneySquare", "DEEPopulate!", 64).setOrigin(0.5);
+
+        my.text.play = this.add.bitmapText(game.config.width/2,game.config.height/2 + 64,"kenneySquare", "Play", 28).setOrigin(0.5);
+        my.text.play.setInteractive();
+        my.text.credits = this.add.bitmapText(game.config.width/2,game.config.height/2 + 96,"kenneySquare", "Credits", 28).setOrigin(0.5);
         my.text.credits.setInteractive();
 
         my.text.controls = this.add.bitmapText(10,this.lowerBound + 50,"kenneySquare", "W - Move up\nS - Move Down\nSPACE - Throw Spike", 20).setOrigin(0);
@@ -101,10 +83,28 @@ class Start extends Phaser.Scene {
         }
 
         //mouse input
-        this.input.on('pointerup', (pointer) =>{
+        //on click, go to scene
+        my.text.play.on('pointerup', (pointer) =>{
             this.scene.start("levelScene");
-        }, this);
-
+        });
+        my.text.credits.on('pointerup', (pointer) =>{
+            this.scene.start("creditsScene");
+        });
+        //on hover, change text
+        my.text.play.on('pointerover', (pointer) => {
+            my.text.play.setAlpha(0.25);
+        });
+        my.text.credits.on('pointerover', (pointer) => {
+            my.text.credits.setAlpha(0.25);
+        });
+        //on unhover, undo text changes
+        my.text.play.on('pointerout', (pointer) => {
+            my.text.play.clearAlpha();
+        });
+        my.text.credits.on('pointerout', (pointer) => {
+            my.text.credits.clearAlpha();
+        });
+ 
         this.counter = 0;
 
     }
@@ -156,16 +156,18 @@ class Start extends Phaser.Scene {
 
             my.sprite.spikeGroup.incX(this.spikeSpeed*dt);
             
+            /*
             //blinking text
-            if(my.text.pressToStart.visible && this.counter > 1/dt){ // if visible for 3 seconds
+            if(my.text.play.visible && this.counter > 1/dt){ // if visible for 3 seconds
                 //make invisible
-                my.text.pressToStart.visible = false;
+                my.text.play.visible = false;
                 this.counter = 0; //reset counter
             }
-            else if (!my.text.pressToStart.visible && this.counter > 0.5/dt){ //if invisible, after 1 second, make visible
-                my.text.pressToStart.visible = true;
+            else if (!my.text.play.visible && this.counter > 0.5/dt){ //if invisible, after 1 second, make visible
+                my.text.play.visible = true;
                 this.counter = 0; //reset counter
             }
+                */
     }
     
 }
